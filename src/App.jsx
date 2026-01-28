@@ -9,11 +9,7 @@ function App() {
       <div className="flex-1 overflow-y-auto">
         <Incidents />
       </div>
-
-      {/* Right: ChatBot (scrolls independently) */}
-      <div className="w-[30vw] border-l overflow-y-auto">
-        <ChatBot />
-      </div>
+      
 
     </div>
   );
