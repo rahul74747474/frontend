@@ -54,10 +54,10 @@ export default function Incident() {
   }, [incidents, search]);
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
+    <div className="h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 h-[calc(100vh-64px)] flex flex-col">
         
         {/* Page Header */}
         <div className="sticky top-16 z-20 bg-slate-50 pb-4 mb-6">
@@ -70,7 +70,7 @@ export default function Incident() {
         </div>
 
         {/* Dashboard Card */}
-        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden flex flex-col h-full">
           
           {/* Search Bar */}
           <div className="p-6 border-b border-slate-100 bg-white flex items-center">
@@ -89,7 +89,7 @@ export default function Incident() {
           </div>
 
           {/* Content Area */}
-          <div className="relative min-h-[400px]">
+          <div className="relative flex-1 overflow-y-auto">
             
             {loading && (
               <div className="p-8">
@@ -116,7 +116,7 @@ export default function Incident() {
                     <col className="w-auto" />
                   </colgroup>
 
-                  <thead>
+                  <thead className="sticky top-0 z-10 bg-slate-50">
                     <tr className="bg-slate-50/50">
                       <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500">#</th>
                       <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500">Incident ID</th>
@@ -166,6 +166,7 @@ export default function Incident() {
     </div>
   );
 }
+
 
 
 
