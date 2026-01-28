@@ -1,11 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { 
-  Search, 
-  AlertCircle, 
-  FileText
-} from "lucide-react";
+import { Search, AlertCircle, FileText } from "lucide-react";
 
 import Navbar from "./Navbar";
+import ChatBot from "./ChatBot";
 
 // --- Skeleton Loader ---
 const TableSkeleton = () => (
@@ -20,15 +17,12 @@ const TableSkeleton = () => (
   </div>
 );
 
-// --- Main Component ---
 export default function Incident() {
-
   const [incidents, setIncidents] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-// fetches data from proxy backend 
   useEffect(() => {
     fetch("https://backend-8n42.onrender.com/api/incidents")
       .then((res) => {
@@ -45,7 +39,6 @@ export default function Incident() {
       });
   }, []);
 
-  // 🔍 Search only
   const filteredIncidents = useMemo(() => {
     return incidents.filter((inc) => {
       const text = `${inc.number} ${inc.short_description}`.toLowerCase();
@@ -54,14 +47,14 @@ export default function Incident() {
   }, [incidents, search]);
 
   return (
-    <div className="h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-700">
+    <div className="h-screen bg-slate-50 text-slate-900">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 h-[calc(100vh-64px)] flex flex-col">
-        
-        {/* Page Header */}
+
+        {/* table Header */}
         <div className="sticky top-16 z-20 bg-slate-50 pb-4 mb-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-extrabold tracking-tight">
             Incident Management
           </h1>
           <p className="mt-2 text-slate-500">
@@ -69,105 +62,79 @@ export default function Incident() {
           </p>
         </div>
 
-        {/* Dashboard Card */}
-        <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden flex flex-col h-full">
-          
-          {/* Search Bar */}
-          <div className="p-6 border-b border-slate-100 bg-white flex items-center">
-            <div className="relative w-full md:w-96">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-slate-400" />
+        {/* Main Row */}
+        <div className="flex flex-1 gap-4 overflow-hidden">
+
+          {/* TABLE CARD */}
+          <div className="bg-white rounded-2xl shadow-xl border border-slate-100 w-full lg:w-[70%] flex flex-col overflow-hidden">
+
+            {/* Search */}
+            <div className="p-6 border-b border-slate-100 bg-white">
+              <div className="relative w-full md:w-96">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by ID or description..."
+                  className="w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50"
+                />
               </div>
-              <input
-                type="text"
-                placeholder="Search by ID or description..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all sm:text-sm"
-              />
             </div>
-          </div>
 
-          {/* Content Area */}
-          <div className="relative flex-1 overflow-y-auto">
-            
-            {loading && (
-              <div className="p-8">
-                <TableSkeleton />
-              </div>
-            )}
+            {/* Table Scroll Area */}
+            <div className="flex-1 overflow-y-auto">
+              {loading && <div className="p-8"><TableSkeleton /></div>}
+              {error && <div className="p-8 text-red-500">{error}</div>}
 
-            {error && (
-              <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                <AlertCircle className="h-8 w-8 text-red-500 mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900">Connection Error</h3>
-                <p className="text-slate-500 max-w-md mt-2">
-                  {error}
-                </p>
-              </div>
-            )}
-
-            {!loading && !error && (
-              <div className="overflow-x-auto">
+              {!loading && !error && (
                 <table className="w-full table-fixed divide-y divide-slate-100">
-                  <colgroup>
-                    <col className="w-[60px]" />
-                    <col className="w-[200px]" />
-                    <col className="w-auto" />
-                  </colgroup>
-
-                  <thead className="sticky top-0 z-10 bg-slate-50">
-                    <tr className="bg-slate-50/50">
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500">#</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500">Incident ID</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500">Description</th>
+                  <thead className="sticky top-0 bg-slate-50 z-10">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs text-slate-500">S.No</th>
+                      <th className="px-6 py-4 text-left text-xs text-slate-500">Incident ID</th>
+                      <th className="px-6 py-4 text-left text-xs text-slate-500">Description</th>
                     </tr>
                   </thead>
-
-                  <tbody className="bg-white divide-y divide-slate-100">
-                    {filteredIncidents.length === 0 ? (
-                      <tr>
-                        <td colSpan="3" className="py-20 text-center text-slate-400">
-                          <FileText className="h-10 w-10 mx-auto mb-2 opacity-20" />
-                          No incidents found
-                        </td>
+                  <tbody>
+                    {filteredIncidents.map((inc, i) => (
+                      <tr key={inc.number} className="hover:bg-slate-50">
+                        <td className="px-6 py-4 text-slate-400">{i + 1}</td>
+                        <td className="px-6 py-4 font-mono text-indigo-700">{inc.number}</td>
+                        <td className="px-6 py-4">{inc.short_description}</td>
                       </tr>
-                    ) : (
-                      filteredIncidents.map((inc, index) => (
-                        <tr key={inc.number} className="hover:bg-slate-50">
-                          <td className="px-6 py-4 text-slate-400">{index + 1}</td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex px-2.5 py-1 rounded-md text-xs font-mono bg-indigo-50 text-indigo-700">
-                              {inc.number}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="text-sm text-slate-700 break-words">
-                              {inc.short_description}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                    ))}
                   </tbody>
                 </table>
+              )}
+            </div>
+
+            {!loading && !error && (
+              <div className="px-6 py-3 border-t text-xs text-slate-500">
+                Showing {filteredIncidents.length} results
               </div>
             )}
           </div>
 
-          {/* Footer */}
-          {!loading && !error && (
-            <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/30 text-xs text-slate-500">
-              Showing {filteredIncidents.length} results
+          {/* CHAT CARD */}
+          <div className="bg-white rounded-2xl shadow-xl border border-slate-100 w-full lg:w-[30%] flex flex-col overflow-hidden">
+
+            {/* Chat Header */}
+            <div className="p-3 border-b border-slate-100 bg-white">
+              <h2 className="text-lg font-semibold">L1 Assistant</h2>
+              <p className="text-sm text-slate-500">
+                Interactive chatbot for Operate Activities
+              </p>
             </div>
-          )}
+
+            {/* Chat Scroll Area */}
+            <div className="flex-1 overflow-hidden">
+              <ChatBot />
+            </div>
+
+          </div>
+
         </div>
       </main>
     </div>
   );
 }
-
-
-
-
-
