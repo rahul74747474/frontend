@@ -7,10 +7,8 @@ export default function Navbar() {
           alt="Logo"
           className="h-10 w-10 object-contain scale-200 ml-4"
         />
-        <h1 className="text-xl font-semibold text-gray-800 m-auto">
-          Incident Dashboard
-        </h1>
       </div>
     </div>
   );
 }
+
