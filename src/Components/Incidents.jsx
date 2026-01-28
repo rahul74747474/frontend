@@ -30,7 +30,7 @@ export default function Incident() {
 
 // fetches data from proxy backend 
   useEffect(() => {
-    fetch("http://localhost:5000/api/incidents")
+    fetch("https://backend-8n42.onrender.com/api/incidents")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
@@ -166,3 +166,4 @@ export default function Incident() {
     </div>
   );
 }
+
